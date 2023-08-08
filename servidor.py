@@ -4,9 +4,12 @@ import socket
 
 clientes = []
 
-def server(host = 'localhost', port=8082):
+def server():
     # Cria uma conexão TCP/IP 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    host = ''
+    port = 7777
 
     #Tenta iniciar o servidor
     try:

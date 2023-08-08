@@ -2,14 +2,16 @@ import socket
 import threading
 import time
 
-def client(host = '200.239.138.242/23', port=8082): 
+def client(): 
     # Cria uma conexão TCP/IP 
     cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     # Tenta conectar ao servidor
-    endereço = (host, port)
+    host = '200.239.138.242'
+    port = 7777
+    
    
     try: 
-        sock.connect(server_address)      
+        sock.connect((host, port))      
     except: 
         return print ("Não foi possivel se conectar") 
     
@@ -40,4 +42,4 @@ def ReceberMensagem(cliente):
 
 
 
-client("200.239.138.242/23", 7777)
+client()
