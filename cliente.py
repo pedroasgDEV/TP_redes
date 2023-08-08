@@ -1,0 +1,44 @@
+import socket
+import threading
+import time
+
+def client(host = 'localhost', port=8082): 
+    # Cria uma conexão TCP/IP 
+    cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    # Tenta conectar ao servidor
+    endereço = (host, port)
+    print ("Conectando a %s porta %s" % server_address) 
+   
+    try: 
+        sock.connect(server_address)      
+    except: 
+        return print ("Não foi possivel se conectar: %s" %str(e)) 
+    
+    nome = input("Qual seu nome?")
+    print("/n Conexão estabelecida")
+    
+    threading.Thread(target=MandarMensagem, args=[cliente, nome]).start()
+    threading.Thread(target=ReceberMensagem, args=[cliente]).start()
+    
+
+def MandarMensagem(cliente, nome):
+    while True:
+        try:
+            msg = input("/n Escolha (Pedra, Papel, Tesoura, Largato, Spock)\n")
+            cliente.send("<{nome}> {msg}".encode('utf-8'))
+        except:
+            return
+
+def ReceberMensagem(cliente):
+    while True:
+        try:
+            msg = cliente.recv(2048).decode('utf-8')
+            print("\n <SERVIDOR> {msg}")
+        except:
+            print("\nConexão perdida\n")
+            cliente.close()
+            break          
+
+
+
+client("200.239.138.242/23", 7777)
