@@ -44,4 +44,4 @@ def broadcast(msg, cliente):
 def deleteCliente(cliente):
     clientes.remove(cliente)
             
-server("200.239.138.242/23", 7777)
+server()

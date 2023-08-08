@@ -2,17 +2,16 @@ import socket
 import threading
 import time
 
-def client(host = 'localhost', port=8082): 
+def client(host = '200.239.138.242/23', port=8082): 
     # Cria uma conexão TCP/IP 
     cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     # Tenta conectar ao servidor
     endereço = (host, port)
-    print ("Conectando a %s porta %s" % server_address) 
    
     try: 
         sock.connect(server_address)      
     except: 
-        return print ("Não foi possivel se conectar: %s" %str(e)) 
+        return print ("Não foi possivel se conectar") 
     
     nome = input("Qual seu nome?")
     print("/n Conexão estabelecida")
