@@ -1,50 +1,46 @@
-
 import threading
 import socket
+import sys
 
-clientes = []
+clients = []
 
-def server():
-    # Cria uma conexão TCP/IP 
+def Server(host = 'localhost', port = 1231):
+
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
-    host = ''
-    port = 7777
 
-    #Tenta iniciar o servidor
     try:
         server.bind((host, port))
         server.listen()
     except:
         return print('\nNão foi possível iniciar o servidor!\n')
 
-    
     while True:
-        cliente, addr = server.accept()
-        clientes.append(cliente)
+        client, addr = server.accept()
+        clients.append(client)
 
-        threading.Thread(target=messagesTreatment, args=[cliente]).start()
+        thread1 = threading.Thread(target=messagesTreatment, args=[client])
+        thread1.start()
 
-def messagesTreatment(cliente):
+def messagesTreatment(client):
     while True:
         try:
-            msg = cliente.recv(2048)
-            broadcast(msg, cliente)
+            msg = client.recv(2048)
+            broadcast(msg, client)
         except:
-            deleteCliente(cliente)
+            deleteClient(client)
             break
 
 
-def broadcast(msg, cliente):
-    for clienteItem in clientes:
-        if clienteItem != cliente:
+def broadcast(msg, client):
+    for clientItem in clients:
+        if clientItem != client:
             try:
-                clienteItem.send(msg)
+                clientItem.send(msg)
             except:
-                deleteCliente(clienteItem)
+                deleteClient(clientItem)
 
 
-def deleteCliente(cliente):
-    clientes.remove(cliente)
-            
-server()
+def deleteClient(client):
+    clients.remove(client)
+
+Server()
