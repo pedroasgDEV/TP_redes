@@ -271,6 +271,14 @@ def JogoInit(client):
         
         apostaInit = betting(client, apostaInit)
         
+        #Showdown
+        
+        msg = f"\n<{players[0].nome}> {players[0].cartas}\n"
+        msg += f"<{players[1].nome}> {players[1].cartas}\n"
+        
+        print(msg)
+        client.send(msg.encode('utf-8'))
+        
         score1 = Pontuacao(players[0].cartas).pontua()
         score2 = Pontuacao(players[1].cartas).pontua()
         
@@ -307,18 +315,22 @@ def betting(client, apostaInit):
         entrada = int(input("Digite uma resposta valida: "))
     
     if(entrada == 1):
-        client.send(f"<{players[0].nome}> apostou {apostaInit}\n".encode('utf-8'))
-        players[0].fazerAposta(apostaInit)
+        client.send(f"<{players[1].nome}> apostou {apostaInit}\n".encode('utf-8'))
+        players[1] #Tenta receber a msg
+        try:
+            msg = client.recv(2048).decode('utf-8')
+        except:
+            client.close()
+            
+        print(f"\n{msg} \n").fazerAposta(apostaInit)
         return apostaInit
     elif(entrada == 2):
-        client.send(f"<{players[0].nome}> apostou {apostaInit * 2}\n".encode('utf-8'))
-        players[0].fazerAposta(apostaInit*2)
+        client.send(f"<{players[1].nome}> apostou {apostaInit * 2}\n".encode('utf-8'))
+        players[1].fazerAposta(apostaInit*2)
         return apostaInit * 2
     else:
         client.send("fim de jogo".encode('utf-8'))
         fimdejogo(client)
-    
-    if(entrada == 3): fimdejogo(client)
              
 def ConectBetting(client, apostaInit):
     #Manda uma string com as cartas
@@ -342,13 +354,13 @@ def ConectBetting(client, apostaInit):
         client.close()
     
     if(resp == "1"):
-        print(f"<{players[1].nome}> apostou {apostaInit}\n")
-        players[1].fazerAposta(int(apostaInit))
+        print(f"<{players[0].nome}> apostou {apostaInit}\n")
+        players[0].fazerAposta(int(apostaInit))
         return apostaInit
     
     elif(resp == "2"):
-        print(f"<{players[1].nome}> apostou {apostaInit * 2}\n")
-        players[1].fazerAposta(int(apostaInit*2))
+        print(f"<{players[0].nome}> apostou {apostaInit * 2}\n")
+        players[0].fazerAposta(int(apostaInit*2))
         return apostaInit * 2
     
     else:
@@ -374,7 +386,7 @@ def fimdejogo(client):
     if(players[0].carteira > players[1].carteira):
         msg += f"{players[0].nome} ganhou\n"
     elif(players[0].carteira < players[1].carteira):
-        msg += f"{players[0].nome} ganhou\n"
+        msg += f"{players[1].nome} ganhou\n"
     else:
         msg += "Terminou empatado\n"
         

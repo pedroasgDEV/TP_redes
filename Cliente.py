@@ -34,6 +34,14 @@ def jogoInit(client):
         betting(client)
         ConectBetting(client)
         
+         #Tenta receber a msg
+        try:
+            msg = client.recv(2048).decode('utf-8')
+        except:
+            client.close()
+            
+        print(msg)
+        
         #Tenta receber a msg
         try:
             msg = client.recv(2048).decode('utf-8')
