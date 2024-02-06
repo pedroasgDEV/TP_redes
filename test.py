@@ -43,15 +43,6 @@ class BaralhoInicial( Baralho ):
                     simbolo = nome[0]+icone
                 self.cartas.append( Carta(nome, valores[nome], naipe, simbolo) )
 
-class Player(object):
-    def __init__(self):
-        self.cards = []
-    
-    #Um contador das suas cartas
-    def addCard(self, card):
-        self.cards.append(card)
-    #uma função de dar a carta ao jogador
-
 class Pontuacao(object):
     def __init__(self, cartas):
         self.cartas = cartas

@@ -11,35 +11,79 @@ def clientInit(address, port):
     except:
         return print('\nNão foi possívvel se conectar ao servidor!\n')
 
-    username = input('Usuário> ')
     print('\nConectado')
+    
+    messagesTreatment(client)
+    
+def messagesTreatment(client):
+    
+    #Envia o nome do usuario
+    username = input('Digite seu nome: ')
+    try:
+        client.send(f'{username}'.encode('utf-8'))
+    except:
+        return
+    
+    jogoInit(client)
 
-    thread1 = threading.Thread(target=receiveMessages, args=[client])
-    thread2 = threading.Thread(target=sendMessages, args=[client, username])
-
-    thread1.start()
-    thread2.start()
-
-
-def receiveMessages(client):
+def jogoInit(client):
+    
     while True:
+        print("\nInicio do jogo de poker\n")
+
+        betting(client)
+        ConectBetting(client)
+        
+        #Tenta receber a msg
         try:
             msg = client.recv(2048).decode('utf-8')
-            print(msg+'\n')
         except:
-            print('\nNão foi possível permanecer conectado no servidor!\n')
-            print('Pressione <Enter> Para continuar...')
             client.close()
-            break
             
+        print(f"\n{msg} \n")
+        
+def betting(client):
+    #Tenta receber a msg
+    try:
+        msg = client.recv(2048).decode('utf-8')
+    except:
+        client.close()
+        
+    print(msg)
+        
+    entrada = int(input("Digite uma resposta: "))
+    while entrada < 1 or entrada > 3:
+        entrada = int(input("Digite uma resposta valida: "))
+    
+    #envia a resposta
+    try:
+        client.send(f'{entrada}'.encode('utf-8'))
+    except:
+        return
+    
+    if(entrada == 3): fimdejogo(client)
 
-def sendMessages(client, username):
-    while True:
-        try:
-            msg = input('\n')
-            client.send(f'<{username}> {msg}'.encode('utf-8'))
-        except:
-            return
+def ConectBetting(client): 
+    #Tenta receber a carteira+
+    try:
+        msg = client.recv(2048).decode('utf-8')
+    except:
+        client.close()
+        
+    if msg == "fim de jogo":
+        fimdejogo(client)
+    else:
+        print(msg)
 
+def fimdejogo(client):
+    #Tenta receber a msg
+    try:
+        msg = client.recv(2048).decode('utf-8')
+    except:
+        client.close()
+        
+    print(f"\n{msg} \n")
+    
+    quit()
 
-clientInit('localhost', 5000)
+clientInit('localhost', 6013)
