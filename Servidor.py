@@ -268,7 +268,43 @@ def JogoInit(client):
                 cartas.mostrar = True
                 
         apostaInit = ConectBetting(client, apostaInit)
+        apostaInit = betting(client, apostaInit)
         
+        #retira cartas jogador1
+        inputStr = client.recv(2048).decode('utf-8')
+        inputList = [int(inp.strip()) for inp in inputStr.split(",") if inp]
+        for inp in inputList:
+            players[1].cartas[inp-1] = baralho.retira()
+            players[1].cartas[inp-1].mostrar = True
+            
+        #retira cartas jogador2
+        validInput = False
+        while not validInput:
+            inputStr = input("Quais Cartas você quer descartar? ( Ex. 1, 2, 3 ): ")
+
+            try:
+                #Transformamos em inteiros, depois dividimos cada número pela virgula.
+                inputList = [int(inp.strip()) for inp in inputStr.split(",") if inp]
+                
+                #validamos caso ele escreva corretamente
+                for inp in inputList:
+                    if inp > 5:
+                        continue 
+                    if inp < 1:
+                        continue 
+                if len(inputList) > 5: continue
+                
+                for inp in inputList:
+                    players[0].cartas[inp-1] = baralho.retira()
+                    players[0].cartas[inp-1].mostrar = True
+                    
+                validInput = True
+                
+            except:
+                #caso o usuário erre tudo
+                print("Você colocou um número errado")
+
+        apostaInit = ConectBetting(client, apostaInit)
         apostaInit = betting(client, apostaInit)
         
         #Showdown
@@ -316,20 +352,13 @@ def betting(client, apostaInit):
     
     if(entrada == 1):
         client.send(f"<{players[1].nome}> apostou {apostaInit}\n".encode('utf-8'))
-        players[1] #Tenta receber a msg
-        try:
-            msg = client.recv(2048).decode('utf-8')
-        except:
-            client.close()
-            
-        print(f"\n{msg} \n").fazerAposta(apostaInit)
+        players[1].fazerAposta(apostaInit)
         return apostaInit
     elif(entrada == 2):
         client.send(f"<{players[1].nome}> apostou {apostaInit * 2}\n".encode('utf-8'))
         players[1].fazerAposta(apostaInit*2)
         return apostaInit * 2
     else:
-        client.send("fim de jogo".encode('utf-8'))
         fimdejogo(client)
              
 def ConectBetting(client, apostaInit):
@@ -395,4 +424,4 @@ def fimdejogo(client):
     
     quit()
 
-serverInit('localhost', 6013)
+serverInit('localhost', 6715)

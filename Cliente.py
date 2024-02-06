@@ -34,7 +34,35 @@ def jogoInit(client):
         betting(client)
         ConectBetting(client)
         
-         #Tenta receber a msg
+        #retira cartas do baralho
+        validInput = False
+        while not validInput:
+            inputStr = input("Quais Cartas você quer descartar? ( Ex. 1, 2, 3 ): ")
+
+            try:
+                #Transformamos em inteiros, depois dividimos cada número pela virgula.
+                inputList = [int(inp.strip()) for inp in inputStr.split(",") if inp]
+                
+                #validamos caso ele escreva corretamente
+                for inp in inputList:
+                    if inp > 5:
+                        continue 
+                    if inp < 1:
+                        continue 
+                
+                if len(inputList) > 5: continue 
+                
+                client.send(inputStr.encode('utf-8'))
+                validInput = True
+                
+            except:
+                #caso o usuário erre tudo
+                print("Você colocou um número errado")
+        
+        betting(client)
+        ConectBetting(client)
+        
+        #Tenta receber a msg
         try:
             msg = client.recv(2048).decode('utf-8')
         except:
@@ -94,4 +122,4 @@ def fimdejogo(client):
     
     quit()
 
-clientInit('localhost', 6013)
+clientInit('localhost', 6715)
